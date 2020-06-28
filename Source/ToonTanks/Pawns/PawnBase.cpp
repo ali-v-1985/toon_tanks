@@ -72,3 +72,8 @@ void APawnBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void APawnBase::PawnDestroyed()
+{
+	HandleDestruction();
+}
+
