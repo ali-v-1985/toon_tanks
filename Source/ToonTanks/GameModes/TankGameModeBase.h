@@ -8,6 +8,7 @@
 
 class APawnTurret;
 class APawnTank;
+class APlayerControllerBase;
 
 /**
  * 
@@ -38,6 +39,8 @@ private:
     APawnTank* PlayerTank;
 
     APawnTurret* PawnTurret;
+
+    APlayerControllerBase* PlayerControllerRef;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game Loop", meta = (AllowPrivateAccess = "true"))
     int StartDelay = 3;

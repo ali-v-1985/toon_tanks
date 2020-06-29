@@ -5,11 +5,15 @@
 #include "ToonTanks/Pawns/PawnTank.h"
 #include "ToonTanks/Pawns/PawnTurret.h"
 #include "Kismet/GameplayStatics.h"
+#include "ToonTanks/PlayerControllers/PlayerControllerBase.h"
 
 void ATankGameModeBase::BeginPlay()
 {
     TargetTurrets = GetTargetTurretCount();
 
+    PlayerControllerRef = Cast<APlayerControllerBase>(
+        UGameplayStatics::GetPlayerController(this, 0)
+    );
     PlayerTank = Cast<APawnTank>(UGameplayStatics::GetPlayerPawn(this, 0));
     HandleGameStart();
     Super::BeginPlay();
@@ -21,22 +25,26 @@ int32 ATankGameModeBase::GetTargetTurretCount()
     ClassToFind = APawnTurret::StaticClass();
     TArray<AActor*> TurretActors;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), ClassToFind, TurretActors);
-    
+
     return TurretActors.Num();
 }
 
 void ATankGameModeBase::ActorDied(AActor* DeadActor)
 {
-    if(DeadActor == PlayerTank)
+    if (DeadActor == PlayerTank)
     {
         PlayerTank->PawnDestroyed();
         HandleGameOver(false);
+        if(PlayerControllerRef)
+        {
+            PlayerControllerRef->SetPlayerEnabledState(false);
+        }
     }
-    else if(APawnTurret* DestroyedTurret = Cast<APawnTurret>(DeadActor))
+    else if (APawnTurret* DestroyedTurret = Cast<APawnTurret>(DeadActor))
     {
         DestroyedTurret->PawnDestroyed();
-        
-        if(--TargetTurrets <= 0)
+
+        if (--TargetTurrets <= 0)
         {
             HandleGameOver(true);
         }
@@ -46,6 +54,15 @@ void ATankGameModeBase::ActorDied(AActor* DeadActor)
 void ATankGameModeBase::HandleGameStart()
 {
     GameStart();
+    if(PlayerControllerRef)
+    {
+        PlayerControllerRef->SetPlayerEnabledState(false);
+        FTimerHandle PlayerEnableHandle;
+        FTimerDelegate PlayerEnableDelegate = FTimerDelegate::CreateUObject(PlayerControllerRef,
+            &APlayerControllerBase::SetPlayerEnabledState, true);
+        GetWorldTimerManager().SetTimer(PlayerEnableHandle, PlayerEnableDelegate, StartDelay, false);
+        
+    }
 }
 
 void ATankGameModeBase::HandleGameOver(bool PlayerWon)
