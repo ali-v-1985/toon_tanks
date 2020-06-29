@@ -61,6 +61,10 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 			UGameplayStatics::PlaySoundAtLocation(this, HitSound,
                                                   GetActorLocation());
 		}
+		if(HitShake)
+		{
+			GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(HitShake, 1);
+		}
 		Destroy();
 	}
 	
