@@ -30,6 +30,11 @@ void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
     PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APawnTank::Fire);
 }
 
+bool APawnTank::GetPlayerAlive()
+{
+    return bAlive;
+}
+
 void APawnTank::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
@@ -70,4 +75,7 @@ void APawnTank::Rotate()
 void APawnTank::HandleDestruction()
 {
     Super::HandleDestruction();
+    bAlive = false;
+    SetActorHiddenInGame(true);
+    SetActorTickEnabled(false);
 }
