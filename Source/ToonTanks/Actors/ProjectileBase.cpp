@@ -30,7 +30,12 @@ AProjectileBase::AProjectileBase()
 void AProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if(LaunchSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound,
+		                                      GetActorLocation());
+	}
 }
 
 void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
@@ -50,6 +55,11 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 			UGameplayStatics::SpawnEmitterAtLocation(this, HitParticle,
                                                      GetActorLocation(),
                                                      FRotator::ZeroRotator);
+		}
+		if(HitSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, HitSound,
+                                                  GetActorLocation());
 		}
 		Destroy();
 	}

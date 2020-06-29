@@ -65,6 +65,11 @@ void APawnBase::HandleDestruction()
                                                  GetActorLocation(),
                                                  FRotator::ZeroRotator);
     }
+    if (DeathSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, DeathSound,
+                                              GetActorLocation());
+    }
 }
 
 // Called every frame

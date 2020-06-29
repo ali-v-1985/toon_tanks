@@ -63,5 +63,9 @@ private:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects", meta = (AllowPrivateAccess = "true"))
     UParticleSystem* DeathParticle;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects", meta = (AllowPrivateAccess = "true"))
+    USoundBase* DeathSound;
+
+
     
 };
