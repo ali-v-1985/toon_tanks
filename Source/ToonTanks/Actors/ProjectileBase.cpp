@@ -20,6 +20,9 @@ AProjectileBase::AProjectileBase()
 	ProjectileMovement->InitialSpeed = MovementSpeed;
 	ProjectileMovement->MaxSpeed = MovementSpeed;
 
+	ParticleTrail = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle Trail"));
+	ParticleTrail->SetupAttachment(RootComponent);
+	
 	InitialLifeSpan = 3.0f;
 }
 
@@ -41,8 +44,15 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	{
 		UGameplayStatics::ApplyDamage(OtherActor, Damage, MyOwner->GetInstigatorController(),
 			this, DamageType);
-	}
 
-	Destroy();
+		if (HitParticle)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(this, HitParticle,
+                                                     GetActorLocation(),
+                                                     FRotator::ZeroRotator);
+		}
+		Destroy();
+	}
+	
 }
 
